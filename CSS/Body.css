@@ -6,7 +6,7 @@ body {
 }
 
 header {
-    font-size: 56px;
+    font-size: 2em;
     background-image: url("../PVPImages/Diagrams/Home\ Page\ Image2.jpg");
     background-repeat: no-repeat;
     background-position: center;
@@ -17,27 +17,31 @@ header {
     text-decoration: underline;
     color: white;
     text-align: center;
-    line-height: 500%;
 }
 
 h1 {
-    font-size: 48px;
+    font-size: 2em;
     text-decoration: underline;
     margin: auto;
-    width: 1000px;
     text-align: center;
+    width: 20em;
 }
 
 h2 {
-    font-size: 40px;
+    font-size: 1.5em;
     text-decoration: underline;
-    margin-left: 10px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.5em;
+    text-decoration: underline;
     text-align: center;
 }
 
 section {
     margin: auto;
-    width: 1080px;
+    width: auto;
     height: auto;
     text-align: justify;
 }
@@ -57,9 +61,7 @@ section {
         font-size: 32px;
     }
 
-    section {
-        width: 780px;
-    }
+
 }
 
 @media screen and (max-width: 800px) {
@@ -77,7 +79,7 @@ section {
         font-size: 28px;
     }
 
-    section {
+    .ok {
         width: 580px;
         font-size: 20px;
     }
@@ -89,11 +91,11 @@ section {
     }
 
     h1 {
-        width: 380px;
+        width: auto;
         font-size: 28px;
     }
 
-    section { 
+    .ok { 
         width: 380px;
         font-size: 18px;
     }
@@ -101,44 +103,36 @@ section {
 
 @media screen and (max-width: 480px) {
     header {
-        font-size: 20px;
-        height: 110px;
-        line-height: 50px;
+        font-size: 1em;
+        height: 3em;
     }
 
     h1 {
-        width: 350px;
-        font-size: 24px;
+        font-size: 1em;
     }
 
     h2 {
-        font-size: 24px;
-    }
-
-    section {
-        width: 350px;
-        font-size: 16px;
+        font-size: 0.5em;
     }
 }
 
 @media screen and (max-width: 360px) {
     header {
-        font-size: 20px;
-        height: 100px;
-        line-height: 50px;
+        font-size: 1em;
+        height: 3em;
     }
 
     h1 {
-        width: 300px;
-        font-size: 20px;
+        font-size: 1rem;
+        width: 15em;
     }
 
     h2 {
-        font-size: 16px;
+        font-size: 0.67rem;
     }
 
-    section {
-        width: 300px;
-        font-size: 14px;
+    main {
+        margin: auto;
+        width: 320px;
     }
 }
