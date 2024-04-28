@@ -3,29 +3,28 @@
     <p>Here are some basic explanations of both an offensive and defensive set to show just how easy it is to create basic Loomian PVP Sets:</p>
     <div class="box">
         <div class="selection">
-            <button v-for="(Rally, Index) in Items" 
+            <button v-for="(Set, Index) in Items" 
             :key="Index" 
-            @click="SwitchTabs(Rally.Name)">
-            {{ Rally.Name }}
-        </button>
+            @click="SwitchTabs(Set.Name)">
+            {{ Set.Name }}
+            </button>
         </div>
+        <button @click="previousSlide"><</button>
+        <button @click="nextSlide" style="float: right;">></button>
         <div class="description"
-        :style="{ display: Rally.Name === Items[0].Name ? 'block' : 'none' }"
-        v-for="(Rally, Index) in Items" 
+        :style="{ display: Set.Name === Items[0].Name ? 'block' : 'none' }"
+        v-for="(Set, Index) in Items" 
         :key="Index" 
-        :id="Rally.Name">
-            <h2>{{ Rally.Name }}</h2>
-            <template v-for="(Text, Index) in Rally.Description" :key="Index">
-                <template v-if="isImagePath(Text)">
-                    <img :src="Text">
-                </template>
-                <template v-else-if="Text == '<br>'">
-                    <br>
-                </template>
-                <template v-else>
-                    <p>{{ Text }}</p>
-                </template>
-            </template>   
+        :id="Set.Name">
+            <h2>{{ Set.Name }}</h2>
+            <div v-for="(Item, Index) in Set.Description" 
+            :id="Index" 
+            class="image-container"
+            :style="{display: Index === currentIndex ? 'block' : 'none'}">
+                <p v-for="(Text, Index) in Item.text">{{ Text }}</p>
+                <br>
+                <img v-for="(Image, Index) in Item" :src="Image.src" :alt="Image.alt" >
+            </div>   
         </div>
     </div>
 </template>
@@ -34,51 +33,134 @@
         name: 'SetExamples',
         data() {
             return {
+                currentIndex: 0,
                 Items: [
                     {
                     Name: "Offensive Set - Example 1", 
-                    Description: [                        
-                        `Ever since it debuted as the Weather Loomian for Dense Fog, Charonyx has received divisive recommendations for how it should be run. Charonyx possesses utility allowing it to thrive either defensively or offensively however this showcase will take a look at its offensive capabilities.`,
-                        `Some may wonder why Charonyx is used as either a defensive Loomian or offensive and its easy to see why when glancing at its Base Stats. 2 of its highest stats are its Ranged Attack (122) and Ranged Defense (106).`,
-                        require("@/assets/images/setMaking/OffensiveSet1/BaseStats.png"),
-                        `Despite Charonyx having a low health - minimising the amount of hits it can take - and low speed - enabling it to be revenge-killed fairly easily, it does also possess a high energy stat of 101 allowing it to dish out many moves before needing to rest. As for Charonyx’s melee side, it has a 96 Melee Defence stat - which is great but won’t be a main focus - and a Melee Attack stat of 48 - not amazing but this stat won’t be used. `,
-                        `Another reason for the split of how Charonyx is run is its type effectiveness. Defensively, its immune to Spirit and Brawler, has a resistance for Fire, Electric and Toxic and is only weak to Metal types. Offensively, considering its movepool, it can hit a lot of Loomians for Neutral Effectiveness save for some light types. However, this won’t be a major problem as we’ll see in its movepool.`,
-                        require("@/assets/images/setMaking/OffensiveSet1/TypeEffectiveness.png"),
-                        `Considering that we know Charonyx has a slow Speed stat, a low Melee Attack stat and we want to make use of its plentiful Ranged Attack stat, Very Smart Frail Sluggish is the ideal personality we’ll be using. Furthermore, this personality doesn’t decrease either of its defences allowing Charonyx to take a few hits either to set up or to underspeed.`,
-                        `Two of its Three abilities are generally accepted as viable in PVP: Prismatic and Reaper. Prismatic is especially helpful for denying light types such as another Charonyx, other Luminamis or Jellusas. Reaper, on the other hand, supports Charonyx’s longevity by replenishing 25% of its health after a knockout or doubling to 50% if the opposing Loomian was a light type. Due to it being a normal ability and therefore easier to access, we’ll use Prismatic.`,
-                        require("@/assets/images/setMaking/OffensiveSet1/Prismatic.png"),
-                        `Another massive reason why Charonyx is considered a powerful Loomian today’s meta is its overwhelmingly powerful array of moves. From priority with Lightspeed Ray to the support move Spite which cuts enemies’ health in half. Ironically, this vast movepool is actually a disadvantage because Charonyx can’t run all the moves it would like to run simultaneously. Nova Blast is chosen as our main Light ATB Move due to its high strength to energy cost ratio and the chance to lower the opponent’s Ranged Attack by one stage, convenient for other ranged attackers.`,
-                        `Frost Beam is a must-have on Charonyx because - otherwise - it gets walled by Loomians immune to its other moves such as Tiklipse, Eleguana and other Charonyxes. It also has a 10% chance to freeze the opponent which can drain their energy.`,
-                        `Spite, as mentioned previously, reduces the opponent’s current health by 50% which eliminates a lot of popular defensive loomians from stalling out Charonyx such as Pyrolen and Venolen.`,
-                        `Lastly, despite its adequate Ranged Attack stat and because it is an offensive Loomian, Charonyx should carry a set-up move such as Magnify which further improves its offensive pressure.`,
-                        `This is only one of many movesets that Charonyx can use so try swapping out attacks for others.`,
-                        require("@/assets/images/setMaking/OffensiveSet1/Moveset.png"),
-                        `First and foremost, 200 Ranged Attack is a must for any offensive loomian - or whichever attacking stat it prioritises. `,
-                        `20 Energy helps charonyx reach a benchmark of 270 which lets it fire off: 2 Magnifies, 4 Spites and 4 Frost Beams.`,
-                        `200 Health, along with 48 Melee Defence, makes Hunder’s Mega Chomp a 3HKO and 32 speed outspeeds a 0 speed Sluggish Sedimars.`,
-                        require("@/assets/images/setMaking/OffensiveSet1/TrainingPoints.png"),
-                        `Charonyx can make good use of a rageful plushie given its high Ranged Defence Stat able to take on a super effect attack and works well with Health Amulet for longevity however, this set will use Light Essence for an increase in damage for its Light Type Moves.`,
+                    Description: [{
+                        text: [
+                            `Ever since it debuted as the Weather Loomian for Dense Fog, Charonyx has received divisive recommendations for how it should be run. Charonyx possesses utility allowing it to thrive either defensively or offensively however this showcase will take a look at its offensive capabilities.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/teambuilding/models/Charonyx-model.webp"),
+                            alt: "Charonyx"
+                        }},
+                        {
+                        text: [
+                            `Some may wonder why Charonyx is used as either a defensive Loomian or offensive and its easy to see why when glancing at its Base Stats. 2 of its highest stats are its Ranged Attack (122) and Ranged Defense (106).`,
+                            `Despite Charonyx having a low health - minimising the amount of hits it can take - and low speed - enabling it to be revenge-killed fairly easily, it does also possess a high energy stat of 101 allowing it to dish out many moves before needing to rest. As for Charonyx’s melee side, it has a 96 Melee Defence stat - which is great but won’t be a main focus - and a Melee Attack stat of 48 - not amazing but this stat won’t be used. `,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet1/BaseStats.png"),
+                            alt: "Base Stats"
+                        }},
+                        {
+                        text: [
+                            `Another reason for the split of how Charonyx is run is its type effectiveness. Defensively, its immune to Spirit and Brawler, has a resistance for Fire, Electric and Toxic and is only weak to Metal types. Offensively, considering its movepool, it can hit a lot of Loomians for Neutral Effectiveness save for some light types. However, this won’t be a major problem as we’ll see in its movepool.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet1/TypeEffectiveness.png"),
+                            alt: "Type Effectiveness"
+                        }},
+                        {
+                        text: [
+                            `Considering that we know Charonyx has a slow Speed stat, a low Melee Attack stat and we want to make use of its plentiful Ranged Attack stat, Very Smart Frail Sluggish is the ideal personality we’ll be using. Furthermore, this personality doesn’t decrease either of its defences allowing Charonyx to take a few hits either to set up or to underspeed.`,
+                            `Two of its Three abilities are generally accepted as viable in PVP: Prismatic and Reaper. Prismatic is especially helpful for denying light types such as another Charonyx, other Luminamis or Jellusas. Reaper, on the other hand, supports Charonyx’s longevity by replenishing 25% of its health after a knockout or doubling to 50% if the opposing Loomian was a light type. Due to it being a normal ability and therefore easier to access, we’ll use Prismatic.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet1/Prismatic.png"),
+                            alt: "Prismatic"
+                        }},
+                        {
+                        text: [
+                            `Another massive reason why Charonyx is considered a powerful Loomian today’s meta is its overwhelmingly powerful array of moves. From priority with Lightspeed Ray to the support move Spite which cuts enemies’ health in half. Ironically, this vast movepool is actually a disadvantage because Charonyx can’t run all the moves it would like to run simultaneously. Nova Blast is chosen as our main Light ATB Move due to its high strength to energy cost ratio and the chance to lower the opponent’s Ranged Attack by one stage, convenient for other ranged attackers.`,
+                            `Frost Beam is a must-have on Charonyx because - otherwise - it gets walled by Loomians immune to its other moves such as Tiklipse, Eleguana and other Charonyxes. It also has a 10% chance to freeze the opponent which can drain their energy.`,
+                            `Spite, as mentioned previously, reduces the opponent’s current health by 50% which eliminates a lot of popular defensive loomians from stalling out Charonyx such as Pyrolen and Venolen.`,
+                            `Lastly, despite its adequate Ranged Attack stat and because it is an offensive Loomian, Charonyx should carry a set-up move such as Magnify which further improves its offensive pressure.`,
+                            `This is only one of many movesets that Charonyx can use so try swapping out attacks for others.`,],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet1/Moveset.png"),
+                            alt: "Moveset"
+                        }},
+                        {
+                        text: [
+                            `First and foremost, 200 Ranged Attack is a must for any offensive loomian - or whichever attacking stat it prioritises. `,
+                            `20 Energy helps charonyx reach a benchmark of 270 which lets it fire off: 2 Magnifies, 4 Spites and 4 Frost Beams.`,
+                            `200 Health, along with 48 Melee Defence, makes Hunder’s Mega Chomp a 3HKO and 32 speed outspeeds a 0 speed Sluggish Sedimars.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet1/TrainingPoints.png"),
+                            alt: "Moveset"
+                        }},
+                        {
+                        text: [
+                            `Charonyx can make good use of a rageful plushie given its high Ranged Defence Stat able to take on a super effect attack and works well with Health Amulet for longevity however, this set will use Light Essence for an increase in damage for its Light Type Moves.`,
+                        ]}
                     ]},
                     {
                     Name: "Offensive Set - Example 2", 
-                    Description: [
-                        `At first glance, Hunder’s stats don’t seem special apart from its great speed of 116 which still holds potential in the current meta. Its Melee Attack sits at 94 while its Ranged attack is 43. Both of its defences are not exactly abundant with its Melee Defence and Ranged Defence being 83 and 69 respectively. This isn’t a huge hindrance considering Hunder is used offensively (and has the speed to avoid being outsped). Hunder’s energy is 84 which allows it to feasibly reach the 250 benchmark. Finally its Health is 78 which is quite “middle in the pack” however this isn’t a big matter.`,
-                        require("@/assets/images/setMaking/OffensiveSet2/BaseStats.png"),
-                        `Hunder is a Metal (like most Sepharite City Loomians) and Electric type which means it has a quad weakness to Earth and a normal weakness to Fire, Water and Brawler. However, quite unexpectedly, it does possess some resistances such as Ice, Bug, Ancient and Mind. It also has 2 major resistances being Metal and Air.`,
-                        require("@/assets/images/setMaking/OffensiveSet2/TypeEffectiveness.png"),
-                        `Offensively, on the contrary, taking into account its relevant moves, Hunder can hit nearly every Loomian for at least neutral save for a couple of fire types.`,
+                    Description: [{
+                        text: [                        
+                            `At first glance, Hunder’s stats don’t seem special apart from its great speed of 116 which still holds potential in the current meta. Its Melee Attack sits at 94 while its Ranged attack is 43. Both of its defences are not exactly abundant with its Melee Defence and Ranged Defence being 83 and 69 respectively. This isn’t a huge hindrance considering Hunder is used offensively (and has the speed to avoid being outsped). Hunder’s energy is 84 which allows it to feasibly reach the 250 benchmark. Finally its Health is 78 which is quite “middle in the pack” however this isn’t a big matter.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/BaseStats.png"),
+                            alt: "Base Stats"
+                        }},
+                        {
+                        text: [                        
+                            `Hunder is a Metal (like most Sepharite City Loomians) and Electric type which means it has a quad weakness to Earth and a normal weakness to Fire, Water and Brawler. However, quite unexpectedly, it does possess some resistances such as Ice, Bug, Ancient and Mind. It also has 2 major resistances being Metal and Air.`,
+                            `Offensively, on the contrary, taking into account its relevant moves, Hunder can hit nearly every Loomian for at least neutral save for a couple of fire types.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/TypeEffectiveness.png"),
+                            alt: "Base Stats"
+                        }},
+                        {
+                        text: [                        
+                            `Given Hunder is a Melee Attacker, it makes sense to use the positive personality Brawny. However, despite its already great speed stat, it does sit between other Loomians who would want to outspeed Hunder who either have the same speed stat or are only slightly below. For this reason, its highly recommended to run Nimble`,
+                            `As for the negative ability, Very Clumsy will be used due to its uselessness.`,
+                        ]},
+                        {
+                        text: [                        
                         `Given Hunder is a Melee Attacker, it makes sense to use the positive personality Brawny. However, despite its already great speed stat, it does sit between other Loomians who would want to outspeed Hunder who either have the same speed stat or are only slightly below. For this reason, its highly recommended to run Nimble`,
                         `As for the negative ability, Very Clumsy will be used due to its uselessness.`,
                         `Hunder’s Melee Attack is decent for the most part however it can be improved so an ability that increases damage output would be greatly helpful. Brute Force does increase damage output by 30% at the cost of secondary effects but Power Jaw takes this a step further by increasing damage by 50% for all biting moves. For this reason, and also because a lot of Hunder’s best moves are biting-based, we will use Power Jaw.`,
-                        require("@/assets/images/setMaking/OffensiveSet2/PowerJaw.png"),
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/PowerJaw.png"),
+                            alt: "Power Jaw"
+                        }},
+                        {
+                        text: [                        
+                        `Given Hunder is a Melee Attacker, it makes sense to use the positive personality Brawny. However, despite its already great speed stat, it does sit between other Loomians who would want to outspeed Hunder who either have the same speed stat or are only slightly below. For this reason, its highly recommended to run Nimble`,
+                        `As for the negative ability, Very Clumsy will be used due to its uselessness.`,
+                        `Hunder’s Melee Attack is decent for the most part however it can be improved so an ability that increases damage output would be greatly helpful. Brute Force does increase damage output by 30% at the cost of secondary effects but Power Jaw takes this a step further by increasing damage by 50% for all biting moves. For this reason, and also because a lot of Hunder’s best moves are biting-based, we will use Power Jaw.`,
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/PowerJaw.png"),
+                            alt: "Power Jaw"
+                        }},
+                        {
+                        text: [                        
                         `As mentioned previously, Hunder has a lot of biting moves such as Blaze Chomp, Vice Jaws, Thunder Chomp etc. The specific combination we’ll choose is Vice Jaws, Thunder Chomp, Chilly Chomp and Blaze Chomp.`,
                         `Vice Jaws prevents the target from using the same move for more than two moves and acts as one of Hunder’s ATB moves. Thunder Chomp enables Hunder to hit water types as well as other metal types. Chilly Chomp is extremely helpful against Earth types as Hunder is 4x weak to them. Finally, Blaze Chomp helps hit dark types, metal types who have an electric immunity and generally any Loomian that doesn’t get hit by the other 3 moves.`,
-                        require("@/assets/images/setMaking/OffensiveSet2/Moveset.png"),
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/Moveset.png"),
+                            alt: "Moveset"
+                        }},
+                        {
+                        text: [                        
                         `Hunder follows the simple “200 200 100” pattern by having 200 Melee Attack, 200 Speed, 52 Energy and 48 Health. `,
                         `200 Melee Attack for maximum damage output, 200 Speed speedties Nimble Dorogo, outspeeds Very Nimble Garlash, 52 Energy gives 5 Vice Jaws and 48 Health acts as leftovers`,
-                        require("@/assets/images/setMaking/OffensiveSet2/TrainingPoints.png"),
                         `Hunder is all about powerful damage - and it also appreciates its diverse moveset. That’s why Hunder will be running Power Cuffs. The amount of TPs invested into Energy that was described earlier takes this into account so Hunder can still pull off quite a few moves before needing to regain energy.`,
-                    ]},
+                        ],
+                        image: {
+                            src: require("@/assets/images/setMaking/OffensiveSet2/TrainingPoints.png"),
+                            alt: "Training Points"
+                        }},
+                        ]},
                     {
                     Name: "Defensive Set - Example 1", 
                     Description: [
@@ -142,7 +224,17 @@
             },
             isImagePath(str) {
                 return /\.(jpg|jpeg|png|gif|webp)$/i.test(str);
-            }
+            },
+            previousSlide() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                }
+            },
+            nextSlide() {
+                if (this.currentIndex <= this.Items.length + 1) {
+                    this.currentIndex++;
+                }
+            }  
         }
     }
 </script>
@@ -166,7 +258,9 @@
 
     .description {
         display: none;
-        padding: 0px 2%;
+        padding: 5px 2%;
+        min-height: 500px;
+
     }
 
     img {
